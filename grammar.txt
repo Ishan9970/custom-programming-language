@@ -1,0 +1,56 @@
+program         : (statement NEWLINE)* statement?
+
+statement       : (var-decl | if-expr | for-expr | while-expr | func-def | expr)
+
+var-decl        : KEYWORD:VAR IDENTIFIER EQ expr
+
+if-expr         : KEYWORD:AGAR expr KEYWORD:TAB expr
+                  (KEYWORD:YA_AGAR expr KEYWORD:TAB expr)*
+                  (KEYWORD:WARNA expr)?
+
+for-expr        : KEYWORD:KE_LIYE IDENTIFIER EQ expr KEYWORD:TAK expr
+                  (KEYWORD:KADAM expr)? KEYWORD:TAB expr
+
+while-expr      : KEYWORD:JABTAK expr KEYWORD:TAB expr
+
+func-def        : KEYWORD:FUNK IDENTIFIER LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN ARROW expr
+
+expr            : comp-expr ((KEYWORD:AUR | KEYWORD:YA) comp-expr)*
+
+comp-expr       : NOT? arith-expr ((EE|NE|LT|GT|LTE|GTE) arith-expr)*
+
+arith-expr      : term ((PLUS|MINUS) term)*
+term            : factor ((MUL|DIV) factor)*
+factor          : (PLUS|MINUS) factor | power
+power           : call (POW factor)*
+call            : atom (LPAREN (expr (COMMA expr)*)? RPAREN)?
+atom            : INT|FLOAT|IDENTIFIER|STRING
+                | LPAREN expr RPAREN
+                | if-expr
+                | for-expr
+                | while-expr
+                | func-def
+
+NOT             : KEYWORD:NAHI
+NEWLINE         : /\n/
+EQ              : "="
+EE              : "=="
+NE              : "!="
+LT              : "<"
+GT              : ">"
+LTE             : "<="
+GTE             : ">="
+PLUS            : "+"
+MINUS           : "-"
+MUL             : "*"
+DIV             : "/"
+POW             : "**"
+LPAREN          : "("
+RPAREN          : ")"
+COMMA           : ","
+ARROW           : "->"
+INT             : /[0-9]+/
+FLOAT           : /[0-9]+\.[0-9]+/
+STRING          : /\".*?\"/
+IDENTIFIER      : /[a-zA-Z_][a-zA-Z0-9_]*/
+KEYWORD         : /[A-Z_]+/
